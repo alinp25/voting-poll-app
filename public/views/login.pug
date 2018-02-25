@@ -1,4 +1,18 @@
 extends partials/layout.pug
 
 block content
-  h1 Login!
+  .userForm
+    form(action="")
+      header Login
+      label Username<span>*</span>
+      input(type="text" placeholder="username")
+      .help At least 6 chars
+      label Password <span>*</span>
+      input(type="password" placeholder="password")
+      .help At least 6 chars
+      br
+      br
+      .help If you don't have an account, it will be automatically created
+      button Login | Register
+      br
+      button.twitterLogin <i class="fab fa-twitter" style="margin-left: 5px"></i> Twitter
