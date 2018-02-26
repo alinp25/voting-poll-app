@@ -1,0 +1,20 @@
+extends partials/layout.pug
+
+block content
+  if (message.length > 0)
+    div 
+      #{message}
+  .userForm
+    form(action="/signup" method="post")
+      header Signup
+      label Username<span>*</span>
+      input(type="text" placeholder="username" name="username")
+      br
+      .help At least 6 chars
+      label Password <span>*</span>
+      input(type="password" placeholder="password" name="password")
+      br
+      .help At least 6 chars
+      br
+      br
+      button(type="submit") Register

@@ -1,18 +1,19 @@
 extends partials/layout.pug
 
 block content
+  if (message.length > 0)
+    div 
+      #{message}
   .userForm
-    form(action="")
+    form(action="/login" method="post")      
       header Login
       label Username<span>*</span>
-      input(type="text" placeholder="username")
-      .help At least 6 chars
+      input(type="text" placeholder="username" name="username")
       label Password <span>*</span>
-      input(type="password" placeholder="password")
-      .help At least 6 chars
+      input(type="password" placeholder="password" name="password")
       br
       br
-      .help If you don't have an account, it will be automatically created
-      button Login | Register
+      button(type="submit") Login
+      .help If you don't have an account, <a href="/signup">make one here</a> or login with Twitter.<i class="fab fa-twitter" style="margin-left: 5px"></i>
       br
       button.twitterLogin <i class="fab fa-twitter" style="margin-left: 5px"></i> Twitter

@@ -16,10 +16,10 @@ html(lang="en")
         a(href="/") Home
       if user
         li
-          a(href="#") My profile
+          a(href="#") My Polls
       li
         if !user
           a(href="/login") Login
         else 
-          a(href="/") Logout
+          a(href="/logout") Logout
     block content
