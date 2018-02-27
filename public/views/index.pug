@@ -3,6 +3,6 @@ extends partials/layout.pug
 block content
   h1 INDEX
   if user
-    h1 Hi there, #{user.local.username}!
+    a(href="/newpoll") New Poll
   else
     h1 Hi there, unknown person!

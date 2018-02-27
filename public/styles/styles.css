@@ -180,6 +180,25 @@ form button {
 	transition: all 0.15s ease-in-out;
 }
 
+.buttonsPoll {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-auto-flow: column;
+	grid-gap: 40px;
+	align-content: center;
+	justify-content: center;
+	margin-bottom: 50px;
+}
+
+.buttonsPoll button {
+	left: 0;
+	width: 75%;
+	margin: 0 auto;
+	transform: none;
+	position: static;
+	transform: none;
+}
+
 form button:hover {
 	background: #60cef2;
 }

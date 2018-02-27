@@ -1,0 +1,19 @@
+extends partials/layout.pug
+
+block content
+  .userForm
+    form(action="/newpoll" method="post")      
+      header Register a new poll!
+      label Form Title 
+      input(type="text" placeholder="title" name="title")
+      label Options
+      div.options
+        input(type="text" placeholder="option" name="option" style="margin-top: 10px;")
+      br
+      br
+      div.buttonsPoll
+        button(type="button").addNewOption Add Option
+        button(type="submit").createPoll Create Poll
+
+  script
+    include ../scripts/scripts.js
