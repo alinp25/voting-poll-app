@@ -103,6 +103,15 @@ module.exports = (app, passport) => {
       }
       res.redirect('/mypolls');
      });
+  });
+
+  app.get("/poll/:id", (req, res) => {
+    Poll.findById(req.params.id, (err, poll) => {
+      if (err) {
+        console.log(err);
+      }
+      res.render('poll', {poll});
+    });
   })
 };
 

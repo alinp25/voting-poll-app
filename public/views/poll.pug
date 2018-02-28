@@ -1,0 +1,10 @@
+extends partials/layout.pug
+
+block content
+  canvas(class="pollChart" width="500px" height="500px")
+
+  script.
+    const POLL = !{JSON.stringify(poll)};
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js")
+  script
+    include ../scripts/poll.js
