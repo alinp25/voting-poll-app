@@ -186,6 +186,21 @@ form button {
 	transition: all 0.15s ease-in-out;
 }
 
+.twitterLogin {
+	color: white;
+	background: var(--light-blue);
+	outline: none;
+	border: none;
+	margin: 0 auto;
+	padding: 5px 15px;
+	font-size: 1.3em;
+	font-weight: 400;
+	border-radius: 3px;
+	box-shadow: 0px 0px 10px rgba(3, 3, 3, 0.7);
+	cursor: pointer;
+	transition: all 0.15s ease-in-out;
+}
+
 .buttonsPoll {
 	display: grid;
 	grid-template-columns: 1fr 1fr;

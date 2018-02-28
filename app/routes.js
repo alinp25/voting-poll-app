@@ -18,7 +18,7 @@ module.exports = (app, passport) => {
   app.post(
     "/login",
     passport.authenticate("local-login", {
-      successRedirect: "/",
+      successRedirect: "/mypolls",
       failureRedirect: "/login",
       failureFlash: true
     })
@@ -37,6 +37,13 @@ module.exports = (app, passport) => {
       failureFlash: true
     })
   );
+
+  app.get('/auth/twitter', passport.authenticate('twitter'));
+
+  app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+    successRedirect: '/mypolls',
+    failureRedirect: '/'
+  }))
 
   app.get("/logout", (req, res) => {
     req.logout();
