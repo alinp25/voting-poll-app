@@ -95,6 +95,15 @@ module.exports = (app, passport) => {
       res.render("mypolls", { user: req.user, pollsList: polls });
     });
   });
+
+  app.get("/delete/:id", (req, res) => {
+     Poll.findByIdAndRemove(req.params.id, (err, poll) => {
+      if (err) {
+        console.log(err);
+      }
+      res.redirect('/mypolls');
+     });
+  })
 };
 
 function isLoggedIn(req, res, next) {

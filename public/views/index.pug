@@ -8,4 +8,5 @@ block content
         a(href="/newpoll") New Poll
     .list
       each poll in pollsList
-        a(href="/poll/"+poll._id)= poll.title
+        .votingpoll
+          a(href="/poll/"+poll._id).openPoll= poll.title

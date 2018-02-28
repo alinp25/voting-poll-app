@@ -51,7 +51,12 @@ table {
 }
 
 body {
-  font-family: 'Inconsolata', monospace;
+	font-family: 'Inconsolata', monospace;
+}
+
+::-webkit-scrollbar {
+	width: 0px;  /* remove scrollbar space */
+	background: transparent;  /* optional: just make scrollbar invisible */
 }
 
 /* Navigation */
@@ -230,7 +235,7 @@ form button:hover {
 }
 
 .polls .topRow a {
-	/* float: right; */
+	float: right;
 	text-decoration: none;
 	color: #fff;
 	transition: all 0.35s;
@@ -241,28 +246,60 @@ form button:hover {
 	border-bottom: 4px solid #fff;
 }
 
-.polls .list {
+/* .polls .list {
 	justify-items: center;
 	align-content: stretch;
 	display: grid;
 	grid-template-columns: 1fr;
-	/* grid-gap: 10px; */
+	grid-gap: 10px;
+} */
+
+.votingpoll {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-auto-flow: column;
+	border-bottom: 1px solid black;
+	width: 100%;
+	justify-items: center;
+	align-content: stretch;
 }
 
-.polls .list a {
+.polls .list .votingpoll:last-child {
+	border: none;
+}
+
+.deletePoll {
+	display: grid;
+	grid-template-columns: 1fr;
+	align-items: center;
+	justify-content: center;
+	margin: 0px 10px;
+	text-decoration: none;
+	color: #000;
+	animation: all 0.5s;
+}
+
+.votingpoll:hover {
+	background: var(--lighter-blue);
+	font-size: 1.2em;
+}
+
+.votingpoll:hover .deletePoll:hover {
+	color: white;
+	font-weight: 700;
+	border-left: 2px solid #fff;
+	border-right: 2px solid #fff;
+	padding: 0px 5px;
+}
+
+.polls .list a.openPoll {
 	display: grid;
 	padding: 20px 0;
 	justify-items: center;
 	align-content: center;
-	width: 100%;
-	border-bottom: 1px solid black;
+	width: 100%;	
 	text-decoration: none;
 	letter-spacing: 1px;
 	color: black;
 	transition: all 0.5s;
-}
-
-.polls .list a:hover {
-	background: var(--lighter-blue);
-	font-size: 1.2em;
 }
