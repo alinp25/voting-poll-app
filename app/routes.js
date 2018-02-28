@@ -117,7 +117,7 @@ module.exports = (app, passport) => {
       if (err) {
         console.log(err);
       }
-      res.render('poll', {poll});
+      res.render('poll', {poll, user: req.user});
     });
   })
 };
