@@ -38,12 +38,15 @@ module.exports = (app, passport) => {
     })
   );
 
-  app.get('/auth/twitter', passport.authenticate('twitter'));
+  app.get("/auth/twitter", passport.authenticate("twitter"));
 
-  app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-    successRedirect: '/mypolls',
-    failureRedirect: '/'
-  }))
+  app.get(
+    "/auth/twitter/callback",
+    passport.authenticate("twitter", {
+      successRedirect: "/mypolls",
+      failureRedirect: "/"
+    })
+  );
 
   app.get("/logout", (req, res) => {
     req.logout();
@@ -59,37 +62,40 @@ module.exports = (app, passport) => {
     }
   });
 
-  app.post("/newpoll", (req, res) => {
-    const newPoll = new Poll();
-    newPoll.title = req.body.title;
-    newPoll.authorID = req.user._id;
-    if (!req.body.option) {
-      return res.redirect('/');
-    }
-    if (typeof req.body.option === "string" && req.body.option != "") {
-      newPoll.options = [
-        {
-          option: req.body.option,
-          votes: 0
-        }
-      ];
-    } else {
-      newPoll.options = req.body.option.filter(opt => opt != "").map(opt => {
-        const optAux = [];
-        if (opt != "") {
-          return {
-            option: opt,
+  app.post("/newpoll", (req, res) => {    
+    if (req.user) {
+      const newPoll = new Poll();
+      newPoll.title = req.body.title;
+      newPoll.authorID = req.user._id;
+      if (!req.body.option) {
+        return res.redirect("/");
+      }
+      if (typeof req.body.option === "string" && req.body.option != "") {
+        newPoll.options = [
+          {
+            option: req.body.option,
             votes: 0
-          };
+          }
+        ];
+      } else {
+        newPoll.options = req.body.option.filter(opt => opt != "").map(opt => {
+          const optAux = [];
+          if (opt != "") {
+            return {
+              option: opt,
+              votes: 0
+            };
+          }
+        });
+      }
+
+
+      newPoll.save(err => {
+        if (err) {
+          console.log(err);
         }
       });
     }
-
-    newPoll.save(err => {
-      if (err) {
-        console.log(err);
-      }
-    });
     res.redirect("/");
   });
 
@@ -104,12 +110,25 @@ module.exports = (app, passport) => {
   });
 
   app.get("/delete/:id", (req, res) => {
-     Poll.findByIdAndRemove(req.params.id, (err, poll) => {
-      if (err) {
-        console.log(err);
-      }
-      res.redirect('/mypolls');
-     });
+    if (req.user)
+      Poll.findById(req.params.id, (err, poll) => {
+        if (err) {
+          console.log(err);
+        }
+
+        if (poll.authorID == req.user._id) {
+          Poll.findByIdAndRemove(req.params.id, (err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+          res.redirect("/mypolls");
+        } else {
+          res.redirect("/");
+        }
+      }); 
+    else 
+      res.redirect("/");
   });
 
   app.get("/poll/:id", (req, res) => {
@@ -117,9 +136,9 @@ module.exports = (app, passport) => {
       if (err) {
         console.log(err);
       }
-      res.render('poll', {poll, user: req.user});
+      res.render("poll", { poll, user: req.user });
     });
-  })
+  });
 };
 
 function isLoggedIn(req, res, next) {
