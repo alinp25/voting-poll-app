@@ -71,22 +71,22 @@ module.exports = (app, passport) => {
         return res.redirect("/");
       }
       if (typeof req.body.option === "string" && req.body.option != "") {
-        newPoll.options = [
-          {
-            option: req.body.option,
-            votes: 0
-          }
-        ];
+        newPoll.votes = [0];
+        newPoll.labels = [req.body.option];
       } else {
-        newPoll.options = req.body.option.filter(opt => opt != "").map(opt => {
-          const optAux = [];
-          if (opt != "") {
-            return {
-              option: opt,
-              votes: 0
-            };
-          }
-        });
+        // newPoll.options = req.body.option.filter(opt => opt != "").map(opt => {
+        //   const optAux = [];
+        //   if (opt != "") {
+        //     return {
+        //       option: opt,
+        //       votes: 0
+        //     };
+        //   }
+        // });
+        newPoll.labels = req.body.option.filter(opt => opt != "");
+        newPoll.votes  = [];
+        newPoll.votes.length = newPoll.labels.length;
+        newPoll.votes.fill(0);
       }
 
 
@@ -138,6 +138,22 @@ module.exports = (app, passport) => {
       }
       res.render("poll", { poll, user: req.user });
     });
+  });
+
+  app.get("/poll/:id/update/:option", (req, res) => {
+    const optToUpdate = `votes.${req.params.option}`;
+    // Poll.findByIdAndUpdate(req.params.id, {$inc: {optToUpdate: 1}}, (err, poll) => {
+    //   if (err) {
+    //     console.log(err);
+    //   } 
+    //   // res.redirect(`/poll/${req.params.id}`);
+    // });
+    Poll.findByIdAndUpdate(req.params.id, {$inc: { [optToUpdate] : 1}}, (err, poll) => {
+      if (err) {
+        console.log(err);
+      }
+      return res.redirect(`/poll/${req.params.id}`);
+    })
   });
 };
 
