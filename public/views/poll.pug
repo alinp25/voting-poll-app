@@ -1,7 +1,12 @@
 extends partials/layout.pug
 
 block content
-  canvas(class="pollChart" width="500px" height="500px")
+  .pollDisplay
+    h1.pollTitle #{poll.title}
+
+    .pollCanvas
+      canvas(class="pollChart" width="100%" height="100%")
+    .chartjs-legend#noselect
 
   script.
     const POLL = !{JSON.stringify(poll)};

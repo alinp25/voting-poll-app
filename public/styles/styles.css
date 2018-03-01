@@ -318,3 +318,74 @@ form button:hover {
 	color: black;
 	transition: all 0.5s;
 }
+
+.pollDisplay {
+	margin-top: 50px;
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr;
+	justify-items: center;
+	align-items: center;
+}
+
+.pollTitle {
+	margin-bottom: 15px;
+	letter-spacing: 4px;
+	font-size: 64px;
+}
+
+.pollCanvas {
+	width: 400px;
+}
+
+.chartjs-legend {
+	margin-top: 50px;
+}
+
+#noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+ol,
+ul {
+  list-style: none;
+  margin:0;
+  padding:0;
+  text-align:center;
+}
+li {
+  display: inline-table;
+}
+
+/* 
+#chart {
+  position:relative;
+  height: 60vh;
+  width: 60vh;
+  top:15%;
+  margin:auto;
+} */
+
+.chartjs-legend {
+  position:absolute;
+  width:100%;
+  bottom:10%;
+}
+
+.chartjs-legend li {
+  cursor:pointer;
+  margin: 10px 4px;
+}
+
+.chartjs-legend li span {
+  position:relative;
+  padding: 6px 20px;
+  border-radius:13px;
+  color:black;
+  z-index:2;
+}

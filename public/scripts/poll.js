@@ -1,57 +1,115 @@
 console.log(POLL);
 
-var ctx = document.querySelector('.pollChart').getContext("2d");
+var ctx = document.querySelector(".pollChart").getContext("2d");
+const chartLegend = document.querySelector(".chartjs-legend");
 
-const randomNum = () => Math.floor((Math.random() * 255) + 1);
-
-Chart.defaults.global.maintainAspectRatio = false;
+const randomNum = () => Math.floor(Math.random() * 255 + 1);
 
 const optionBackgroundColor = [];
 const optionBorderColor = [];
 const optionLabels = POLL.options.map(opt => opt.option);
-const optionData   = POLL.options.map(opt => opt.votes);
+const optionData = POLL.options.map(opt => opt.votes);
 
 for (var i = 0; i < optionLabels.length; i++) {
   const r = randomNum();
   const g = randomNum();
   const b = randomNum();
-  optionBackgroundColor.push(`rgba(${r}, ${g}, ${b}, 0.2)`);
+  optionBackgroundColor.push(`rgba(${r}, ${g}, ${b}, 0.5)`);
   optionBorderColor.push(`rgba(${r}, ${g}, ${b}, 1)`);
-};
+}
 
-const pollChart = new Chart(ctx, {
-  type: 'pie',
-  data: {
-    labels: optionLabels,
-    datasets: [{
-      label: '# of Votes',
+const data = {
+  labels: optionLabels,
+  datasets: [
+    {
+      label: "# of Votes",
       data: optionData,
       backgroundColor: optionBackgroundColor,
       borderColor: optionBorderColor,
       borderWidth: 1
-    }]
+    }
+  ]
+};
+
+const options = {
+  animation: {
+    animateRotate: false,
+    animateScale: true
   },
-  options: {
-    responsive: false,
-    tooltips: {
-      // bodyFontSize: 80
-    },
-    legend: {
-      labels: {
-        // padding: 40,
-        // fontSize: 80
+  cutoutPercentage: 85,
+  legend: false,
+  legendCallback: function(chart) {
+    const text = [];
+    text.push("<ul class=" + chart.id + '-legend">');
+    for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
+      text.push(
+        '<li><span style="background-color: ' +
+          chart.data.datasets[0].backgroundColor[i] +
+          '">'
+      );
+      if (chart.data.labels[i]) {
+        text.push(chart.data.labels[i]);
+      }
+      text.push("</span></li>");
+    }
+    text.push("</ul>");
+    return text.join("");
+  },
+  tooltips: {
+    mode: "single",
+    callbacks: {
+      label: function(tooltipItems, data) {
+        var sum = data.datasets[0].data.reduce(add, 0);
+        function add(a, b) {
+          return a + b;
+        }
+
+        return (
+          parseInt(data.datasets[0].data[tooltipItems.index] / sum * 100, 10) +
+          "%"
+        );
       },
-      display: true,
-      position: 'right',
-      onClick: null
-    },
-    scales: {
-      yAxes: [{
-        display: false
-      }],
-      xAxes: [{
-        display: false
-      }]
+      beforeLabel: function(tooltipItems, data) {
+        return (
+          data.datasets[0].data[tooltipItems.index] +
+          " vote" +
+          (data.datasets[0].data[tooltipItems.index] == 1 ? "" : "s")
+        );
+      }
     }
   }
+};
+
+const pollChart = new Chart(ctx, {
+  type: "doughnut",
+  data: data,
+  options: options
 });
+
+chartLegend.innerHTML = pollChart.generateLegend();
+
+const liChartLegend = chartLegend.querySelectorAll("li");
+const ulChartLegend = chartLegend.querySelector("ul");
+liChartLegend.forEach(lis =>
+  lis.addEventListener("click", function(e) {
+    const idx = Array.prototype.indexOf.call(ulChartLegend.children, this);
+    pollChart.data.datasets[0].data[idx] += 1;
+    pollChart.update();
+  })
+);
+
+/*$('#myChart').on('click', function(evt) {
+  var activePoints = myChart.getElementsAtEvent(evt);
+  var firstPoint = activePoints[0];
+  if (firstPoint !== undefined) {
+    console.log('canvas: ' + data.datasets[firstPoint._datasetIndex].data[firstPoint._index]);
+  } else {
+    myChart.data.labels.push("New");
+    myChart.data.datasets[0].data.push(100);
+    myChart.data.datasets[0].backgroundColor.push("red");
+    myChart.options.animation.animateRotate = false;
+    myChart.options.animation.animateScale = false;
+    myChart.update();
+    $("#chartjs-legend").html(myChart.generateLegend());
+  }
+});*/
