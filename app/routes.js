@@ -142,13 +142,16 @@ module.exports = (app, passport) => {
 
   app.get("/poll/:id/update/:option", (req, res) => {
     const optToUpdate = `votes.${req.params.option}`;
-    // Poll.findByIdAndUpdate(req.params.id, {$inc: {optToUpdate: 1}}, (err, poll) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } 
-    //   // res.redirect(`/poll/${req.params.id}`);
-    // });
     Poll.findByIdAndUpdate(req.params.id, {$inc: { [optToUpdate] : 1}}, (err, poll) => {
+      if (err) {
+        console.log(err);
+      }
+      return res.redirect(`/poll/${req.params.id}`);
+    })
+  });
+
+  app.post("/poll/:id/add/:option", (req, res) => {
+    Poll.findByIdAndUpdate(req.params.id, {$push: { 'labels': req.params.option, 'votes' : 1}}, (err, poll) => {
       if (err) {
         console.log(err);
       }

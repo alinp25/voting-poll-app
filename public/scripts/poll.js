@@ -87,6 +87,7 @@ const pollChart = new Chart(ctx, {
 });
 
 chartLegend.innerHTML = pollChart.generateLegend();
+pollChart.update();
 
 // const liChartLegend = chartLegend.querySelectorAll("li");
 // const ulChartLegend = chartLegend.querySelector("ul");
@@ -96,7 +97,6 @@ chartLegend.innerHTML = pollChart.generateLegend();
 //     pollChart.data.datasets[0].data[idx] += 1;
 //   })
 // );
-pollChart.update();
 
 // /*$('#myChart').on('click', function(evt) {
 //   var activePoints = myChart.getElementsAtEvent(evt);
