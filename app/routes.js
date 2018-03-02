@@ -99,7 +99,7 @@ module.exports = (app, passport) => {
     res.redirect("/");
   });
 
-  app.get("/mypolls", (req, res) => {
+  app.get("/mypolls", isLoggedIn, (req, res) => {
     Poll.find({ authorID: req.user._id }, (err, polls) => {
       if (err) {
         console.log(err);
@@ -142,6 +142,12 @@ module.exports = (app, passport) => {
 
   app.get("/poll/:id/update/:option", (req, res) => {
     const optToUpdate = `votes.${req.params.option}`;
+    const ipAddress = (req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket.remoteAddress);
+
+
     Poll.findByIdAndUpdate(req.params.id, {$inc: { [optToUpdate] : 1}}, (err, poll) => {
       if (err) {
         console.log(err);
@@ -150,13 +156,21 @@ module.exports = (app, passport) => {
     })
   });
 
-  app.post("/poll/:id/add/:option", (req, res) => {
+  app.post("/poll/:id/add/:option([^/]+/[^/]+)", isLoggedIn, (req, res) => {
     Poll.findByIdAndUpdate(req.params.id, {$push: { 'labels': req.params.option, 'votes' : 1}}, (err, poll) => {
       if (err) {
         console.log(err);
       }
       return res.redirect(`/poll/${req.params.id}`);
     })
+  });
+
+  app.get("*", (req, res) => {
+    res.redirect("/");
+  });
+
+  app.post("*", (req, res) => {
+    res.redirect("/");
   });
 };
 
@@ -165,5 +179,5 @@ function isLoggedIn(req, res, next) {
     return next();
   }
 
-  res.redirect("/");
+  res.redirect("/login");
 }

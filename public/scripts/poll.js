@@ -1,6 +1,7 @@
 const ctx = document.querySelector(".pollChart").getContext("2d");
 const chartLegend = document.querySelector(".cdd");
 const addVote = document.querySelector('#addVote');
+const addOption = document.querySelector('#addOption');
 
 const randomNum = () => Math.floor(Math.random() * 255 + 1);
 
@@ -92,7 +93,7 @@ const pollChart = new Chart(ctx, {
 chartLegend.innerHTML = pollChart.generateLegend();
 pollChart.update();
 
-function postVote(path, method) {
+function sendForm(path, method) {
   method = method || "get"; 
 
   var form = document.createElement("form");
@@ -107,5 +108,12 @@ const optionSelect = document.querySelector('.custom-select');
 
 addVote.addEventListener('click', () => {
   const path = `/poll/${POLL._id}/update/${optionSelect.options.selectedIndex}`;
-  return postVote(path, 'get');
+  return sendForm(path, 'get');
+});
+
+const newOption = document.querySelector('#newOption');
+
+addOption.addEventListener('click', () => {
+  const path = `/poll/${POLL._id}/add/${newOption.value}`;
+  return sendForm(path, 'post');
 });

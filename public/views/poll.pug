@@ -9,8 +9,11 @@ block content
     .cddGrid
       .cdd.custom-dropdown#noselect
       
-      button#addVote Voteaza
-        
+      button#addVote.btnVote Vote
+    if user
+      .cddAdd
+        input(type="text" placeholder="Add Option")#newOption
+        button#addOption.btnVote Add Option
       
   script.
     const POLL = !{JSON.stringify(poll)};
