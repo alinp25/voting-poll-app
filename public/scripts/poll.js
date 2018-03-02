@@ -1,5 +1,6 @@
-var ctx = document.querySelector(".pollChart").getContext("2d");
-const chartLegend = document.querySelector(".chartjs-legend");
+const ctx = document.querySelector(".pollChart").getContext("2d");
+const chartLegend = document.querySelector(".cdd");
+const addVote = document.querySelector('#addVote');
 
 const randomNum = () => Math.floor(Math.random() * 255 + 1);
 
@@ -39,19 +40,21 @@ const options = {
   legend: false,
   legendCallback: function(chart) {
     const text = [];
-    text.push("<ul class=" + chart.id + '-legend">');
+    text.push('<select class="custom-select">');
     for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
       text.push(
-        `<li><a href="${currentLocation}/update/${i}" style="background-color: ` +
-          chart.data.datasets[0].backgroundColor[i] +
-          `">`
+        '<option>'
+        // `<option>` +
+          // chart.data.datasets[0].backgroundColor[i] +
+          // `">`
       );
       if (chart.data.labels[i]) {
         text.push(chart.data.labels[i]);
       }
-      text.push("</a></li>");
+      text.push("</option>");
     }
-    text.push("</ul>");
+    // text.push("<option>Add New Option</option>");
+    text.push("</select>");
     return text.join("");
   },
   tooltips: {
@@ -70,7 +73,7 @@ const options = {
       },
       beforeLabel: function(tooltipItems, data) {
         return (
-          data.labels[tooltipItems.index] + ' ' // +  
+          data.labels[tooltipItems.index] // + ' ' +  
           // data.datasets[0].data[tooltipItems.index] +
           // " vote" +
           // (data.datasets[0].data[tooltipItems.index] == 1 ? "" : "s")
@@ -89,27 +92,20 @@ const pollChart = new Chart(ctx, {
 chartLegend.innerHTML = pollChart.generateLegend();
 pollChart.update();
 
-// const liChartLegend = chartLegend.querySelectorAll("li");
-// const ulChartLegend = chartLegend.querySelector("ul");
-// liChartLegend.forEach(lis =>
-//   lis.addEventListener("click", function(e) {
-//     const idx = Array.prototype.indexOf.call(ulChartLegend.children, this);
-//     pollChart.data.datasets[0].data[idx] += 1;
-//   })
-// );
+function postVote(path, method) {
+  method = method || "get"; 
 
-// /*$('#myChart').on('click', function(evt) {
-//   var activePoints = myChart.getElementsAtEvent(evt);
-//   var firstPoint = activePoints[0];
-//   if (firstPoint !== undefined) {
-//     console.log('canvas: ' + data.datasets[firstPoint._datasetIndex].data[firstPoint._index]);
-//   } else {
-//     myChart.data.labels.push("New");
-//     myChart.data.datasets[0].data.push(100);
-//     myChart.data.datasets[0].backgroundColor.push("red");
-//     myChart.options.animation.animateRotate = false;
-//     myChart.options.animation.animateScale = false;
-//     myChart.update();
-//     $("#chartjs-legend").html(myChart.generateLegend());
-//   }
-// });*/
+  var form = document.createElement("form");
+  form.setAttribute("method", method);
+  form.setAttribute("action", path);
+
+  document.body.appendChild(form);
+  form.submit();
+}
+
+const optionSelect = document.querySelector('.custom-select');
+
+addVote.addEventListener('click', () => {
+  const path = `/poll/${POLL._id}/update/${optionSelect.options.selectedIndex}`;
+  return postVote(path, 'get');
+});
