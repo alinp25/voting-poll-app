@@ -115,5 +115,5 @@ const newOption = document.querySelector('#newOption');
 
 addOption.addEventListener('click', () => {
   const path = `/poll/${POLL._id}/add/${newOption.value}`;
-  return sendForm(path, 'post');
+  return sendForm(path, 'get');
 });

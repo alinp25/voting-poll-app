@@ -18,7 +18,7 @@ module.exports = (app, passport) => {
   app.post(
     "/login",
     passport.authenticate("local-login", {
-      successRedirect: "/mypolls",
+      successRedirect: "/",
       failureRedirect: "/login",
       failureFlash: true
     })
@@ -155,8 +155,8 @@ module.exports = (app, passport) => {
       return res.redirect(`/poll/${req.params.id}`);
     })
   });
-
-  app.post("/poll/:id/add/:option([^/]+/[^/]+)", isLoggedIn, (req, res) => {
+  
+  app.get("/poll/:id/add/:option(*)", isLoggedIn, (req, res) => {
     Poll.findByIdAndUpdate(req.params.id, {$push: { 'labels': req.params.option, 'votes' : 1}}, (err, poll) => {
       if (err) {
         console.log(err);
@@ -166,10 +166,6 @@ module.exports = (app, passport) => {
   });
 
   app.get("*", (req, res) => {
-    res.redirect("/");
-  });
-
-  app.post("*", (req, res) => {
     res.redirect("/");
   });
 };
