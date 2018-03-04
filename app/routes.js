@@ -155,6 +155,7 @@ module.exports = (app, passport) => {
       if (req.user) {
         if (poll.usersVoted.indexOf(req.user._id) > -1) {
           console.log('You already voted!');
+          return res.redirect(`/poll/${req.params.id}`);
         } else {
           Poll.findByIdAndUpdate(
               req.params.id,
@@ -171,6 +172,7 @@ module.exports = (app, passport) => {
       } else {
         if (poll.ipsVoted.indexOf(ipAddress) > -1) {
           console.log('You already voted!');
+          return res.redirect(`/poll/${req.params.id}`);
         } else {
           Poll.findByIdAndUpdate(
               req.params.id,
