@@ -68,8 +68,8 @@ const options = {
         }
 
         return (
-          parseInt(data.datasets[0].data[tooltipItems.index] / sum * 100, 10) +
-          "%"
+          `${parseInt(data.datasets[0].data[tooltipItems.index] / sum * 100, 10) +
+          "%"} (${parseInt(data.datasets[0].data[tooltipItems.index])})`
         );
       },
       beforeLabel: function(tooltipItems, data) {

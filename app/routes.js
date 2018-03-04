@@ -62,7 +62,7 @@ module.exports = (app, passport) => {
     }
   });
 
-  app.post("/newpoll", (req, res) => {    
+  app.post("/newpoll", (req, res) => {
     if (req.user) {
       const newPoll = new Poll();
       newPoll.title = req.body.title;
@@ -84,11 +84,12 @@ module.exports = (app, passport) => {
         //   }
         // });
         newPoll.labels = req.body.option.filter(opt => opt != "");
-        newPoll.votes  = [];
+        newPoll.votes = [];
         newPoll.votes.length = newPoll.labels.length;
         newPoll.votes.fill(0);
+        newPoll.usersVoted = [""];
+        newPoll.ipsVoted = [""];
       }
-
 
       newPoll.save(err => {
         if (err) {
@@ -117,7 +118,7 @@ module.exports = (app, passport) => {
         }
 
         if (poll.authorID == req.user._id) {
-          Poll.findByIdAndRemove(req.params.id, (err) => {
+          Poll.findByIdAndRemove(req.params.id, err => {
             if (err) {
               console.log(err);
             }
@@ -126,9 +127,8 @@ module.exports = (app, passport) => {
         } else {
           res.redirect("/");
         }
-      }); 
-    else 
-      res.redirect("/");
+      });
+    else res.redirect("/");
   });
 
   app.get("/poll/:id", (req, res) => {
@@ -136,33 +136,80 @@ module.exports = (app, passport) => {
       if (err) {
         console.log(err);
       }
+      if (!poll) {
+        return res.redirect("/");
+      }
       res.render("poll", { poll, user: req.user });
     });
   });
 
   app.get("/poll/:id/update/:option", (req, res) => {
     const optToUpdate = `votes.${req.params.option}`;
-    const ipAddress = (req.headers['x-forwarded-for'] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress);
+    const ipAddress =
+      req.headers["x-forwarded-for"] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress;
 
-
-    Poll.findByIdAndUpdate(req.params.id, {$inc: { [optToUpdate] : 1}}, (err, poll) => {
-      if (err) {
-        console.log(err);
+    Poll.findById(req.params.id, (err, poll) => {
+      if (req.user) {
+        if (poll.usersVoted.indexOf(req.user._id) > -1) {
+          console.log('You already voted!');
+        } else {
+          Poll.findByIdAndUpdate(
+              req.params.id,
+              { $inc: { [optToUpdate]: 1 },
+                $push: { usersVoted: req.user._id } },
+              (err, poll) => {
+                if (err) {
+                  console.log(err);
+                }        
+                return res.redirect(`/poll/${req.params.id}`);
+              }
+            );
+        }
+      } else {
+        if (poll.ipsVoted.indexOf(ipAddress) > -1) {
+          console.log('You already voted!');
+        } else {
+          Poll.findByIdAndUpdate(
+              req.params.id,
+              { $inc: { [optToUpdate]: 1 },
+                $push: { ipsVoted: ipAddress } },
+              (err, poll) => {
+                if (err) {
+                  console.log(err);
+                }        
+                return res.redirect(`/poll/${req.params.id}`);
+              }
+            );
+        }
       }
-      return res.redirect(`/poll/${req.params.id}`);
-    })
+    });
+    // Poll.findByIdAndUpdate(
+    //   req.params.id,
+    //   { $inc: { [optToUpdate]: 1 } },
+    //   (err, poll) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+
+    //     return res.redirect(`/poll/${req.params.id}`);
+    //   }
+    // );
   });
-  
+
   app.get("/poll/:id/add/:option(*)", isLoggedIn, (req, res) => {
-    Poll.findByIdAndUpdate(req.params.id, {$push: { 'labels': req.params.option, 'votes' : 1}}, (err, poll) => {
-      if (err) {
-        console.log(err);
+    Poll.findByIdAndUpdate(
+      req.params.id,
+      { $push: { labels: req.params.option, votes: 1 } },
+      (err, poll) => {
+        if (err) {
+          console.log(err);
+        }
+        return res.redirect(`/poll/${req.params.id}`);
       }
-      return res.redirect(`/poll/${req.params.id}`);
-    })
+    );
   });
 
   app.get("*", (req, res) => {

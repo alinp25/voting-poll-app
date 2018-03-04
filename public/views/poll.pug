@@ -1,19 +1,24 @@
 extends partials/layout.pug
 
+
 block content
+
   .pollDisplay
     h1.pollTitle #{poll.title}
-
+    
     .pollCanvas
       canvas(class="pollChart" width="100%" height="100%")
     .cddGrid
       .cdd.custom-dropdown#noselect
       
       button#addVote.btnVote Vote
+    
     if user
       .cddAdd
         input(type="text" placeholder="Add Option")#newOption
         button#addOption.btnVote Add Option
+      a.tweetButton(href=`http://twitter.com/intent/tweet?text=Vote on "` + locals.poll.title + `" right now! Check it out here http://localhost:8080/poll/` + locals.poll._id).
+        <i class="fab fa-twitter" style="margin-left: 5px"></i> Tweet 
       
   script.
     const POLL = !{JSON.stringify(poll)};
