@@ -12,10 +12,13 @@ module.exports = (app, passport) => {
   });
 
   app.get("/login", (req, res) => {
+    if (req.user) {
+      return res.redirect('/');
+    }
     res.render("login", { message: req.flash("loginMessage") });
   });
 
-  app.post(
+  app.post( 
     "/login",
     passport.authenticate("local-login", {
       successRedirect: "/",
@@ -25,8 +28,10 @@ module.exports = (app, passport) => {
   );
 
   app.get("/signup", (req, res) => {
+    if (req.user) {
+      return res.redirect('/');
+    }
     res.render("signup", { message: req.flash("signupMessage") });
-    // res.render('signup');
   });
 
   app.post(
